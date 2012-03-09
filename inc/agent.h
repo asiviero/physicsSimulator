@@ -14,8 +14,6 @@
 #ifndef AGENT_H_
 #define AGENT_H_
 
-#include "gravity.h"
-
 	class agent {// : public gravityClass {
 		protected:
 			float floatAgentPosition[3], floatAgentSpeed[3], floatAgentAcceleration[3];

@@ -23,7 +23,6 @@ using namespace std;
 #include "inc/userInput.h"
 #include "inc/generalDrawing.h"
 #include "inc/agent.h"
-#include "inc/gravity.h"
 
 
 #endif /* INC_H_ */
