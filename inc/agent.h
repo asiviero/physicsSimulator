@@ -19,6 +19,7 @@
 			float floatAgentPosition[3], floatAgentSpeed[3], floatAgentAcceleration[3], floatAgentForce[3];
 			float floatAgentMass, floatAgentFrictionCoefficient[2];
 			float floatAgentColor[3];
+			float floatBounceTimer;
 			bool gravitySet, frictionSet;
 			bool boolMoveUp, boolMoveDown, boolMoveLeft, boolMoveRight;
 
@@ -49,6 +50,10 @@
 			void setFriction();
 			float getResultingFrictionCoefficient(int material, int mode);
 
+			// Bouncing functions - implemmented in bounce.cpp
+			void increaseBounceTimer();
+			float energyLossCoefficient();
+			void resetBounceTimer();
 
 	};
 

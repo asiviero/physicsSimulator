@@ -28,13 +28,14 @@
 #define GRAVITATIONAL_CONSTANT 6.6742E-11
 
 // Constant modified for smoothness on falls
-#define EARTH_GRAVITY 9.80665e-2
-#define STD_FORCE 3e-3
+#define EARTH_GRAVITY 9.80665e-1
+#define STD_FORCE_VERTICAL 1e-1
+#define STD_FORCE_HORIZONTAL 0.2e-1
 
 // These constants stand for the maximum coordinates allowed in a screen
-#define X_AXIS_SIZE 1e2
-#define Y_AXIS_SIZE 1e2
-#define Z_AXIS_SIZE 1e2
+#define X_AXIS_SIZE 1e6
+#define Y_AXIS_SIZE 1e6
+#define Z_AXIS_SIZE 1e6
 
 // These constants stand for the width and height of the main window
 #define MAIN_WINDOW_WIDTH 400

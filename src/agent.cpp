@@ -15,10 +15,11 @@ agent::agent() {
 		floatAgentColor[i] = 0;
 		floatAgentPosition[i] = 0;
 	}
-	floatAgentPosition[Y_AXIS] = Y_AXIS_SIZE;
+	floatAgentPosition[Y_AXIS] = 0;//Y_AXIS_SIZE;
 	floatAgentMass = AGENT_MASS;
 	floatAgentFrictionCoefficient[STATIC] = AGENT_FRICTION_COEFFICIENT_STATIC;
 	floatAgentFrictionCoefficient[DYNAMIC] = AGENT_FRICTION_COEFFICIENT_DYNAMIC;
+	floatBounceTimer = 0;
 	gravitySet = true;
 }
 
@@ -57,9 +58,20 @@ void agent::moveAgent() {
 	// check for ground
 	if(floatAgentPosition[Y_AXIS] <= 0) {
 		//reset speed and acceleration vectors in Y axis
-		floatAgentAcceleration[Y_AXIS] = floatAgentSpeed[Y_AXIS] = 0;
-	}
+		//floatAgentAcceleration[Y_AXIS] = floatAgentSpeed[Y_AXIS] = 0;
 
+		//Calculate the loss of speed based on the timer
+		floatAgentSpeed[Y_AXIS] *= -1*energyLossCoefficient();
+		if(floatAgentSpeed[Y_AXIS] < 1) {
+			floatAgentSpeed[Y_AXIS] = 0;
+			resetBounceTimer();
+		}
+	}
+	else {
+		// Starts bounce timer
+		increaseBounceTimer();
+	}
+	//if(floatBounceTimer > 0.4) resetBounceTimer();
 
 	// After ground checking, directional control is applied, in a manner that ground
 	// effect of nulling speed and acceleration in the Y axis won't affect further movement
@@ -79,6 +91,7 @@ void agent::moveAgent() {
 
 	}
 
+	cout << floatAgentForce[Y_AXIS] << "  " << floatAgentSpeed[X_AXIS] << endl;
 	floatPrevSpeed = floatAgentSpeed[X_AXIS];
 
 	// Updates the movement vectors (acceleration, speed and position)
@@ -103,7 +116,7 @@ void agent::moveAgent() {
 	if(floatAgentPosition[Y_AXIS] > Y_AXIS_SIZE/3) resetForces(Y_AXIS);
 
 	// this is for testing friction
-	if(floatAgentPosition[X_AXIS] > X_AXIS_SIZE/3) resetForces(X_AXIS);
+	//if(floatAgentPosition[X_AXIS] > X_AXIS_SIZE/3) resetForces(X_AXIS);
 }
 
 // Basic function to update the vectors, from lowest to highest level

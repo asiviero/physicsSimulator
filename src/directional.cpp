@@ -58,11 +58,11 @@ void agent::setMoveDirectional(int dir) {
 
 // Apply what was defined in setMoveDirectional
 void agent::directionalMovement() {
-	floatAgentForce[Y_AXIS] += boolMoveUp*STD_FORCE;
-	floatAgentForce[Y_AXIS] -= boolMoveDown*STD_FORCE;
+	floatAgentForce[Y_AXIS] += boolMoveUp*STD_FORCE_VERTICAL;
+	floatAgentForce[Y_AXIS] -= boolMoveDown*STD_FORCE_VERTICAL;
 
-	floatAgentForce[X_AXIS] += boolMoveRight*STD_FORCE;
-	floatAgentForce[X_AXIS] -= boolMoveLeft*STD_FORCE;
+	floatAgentForce[X_AXIS] += boolMoveRight*STD_FORCE_HORIZONTAL;
+	floatAgentForce[X_AXIS] -= boolMoveLeft*STD_FORCE_HORIZONTAL;
 }
 
 void agent::resetDirectionalMovement() {
