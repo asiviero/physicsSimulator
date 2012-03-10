@@ -17,9 +17,9 @@
 	class agent {
 		protected:
 			float floatAgentPosition[3], floatAgentSpeed[3], floatAgentAcceleration[3], floatAgentForce[3];
-			float floatAgentMass;
+			float floatAgentMass, floatAgentFrictionCoefficient[2];
 			float floatAgentColor[3];
-			bool gravitySet;
+			bool gravitySet, frictionSet;
 			bool boolMoveUp, boolMoveDown, boolMoveLeft, boolMoveRight;
 
 		public:
@@ -27,21 +27,29 @@
 			agent();
 			void drawAgent();
 
-			// General functions
+			// General functions - implemented in agent.cpp
 			void moveAgent();
 			void updateMovementVectors();
+			int getForceDirection(int axis);
+			int getSpeedDirection(int axis);
+			float getNormalForce(float angle);
+			// This function might be used to establish boundaries in the grid
+			// After it has been called, inertia will control the Agent movement
+			void resetForces(int axis);
 
-			// Directional movement methods, controlled by user input
+			// Directional movement methods, controlled by user input - implemented in directional.cpp
 			void directionalMovement();
 			void setMoveDirectional(int dir);
 			void resetDirectionalMovement();
 
-			// Gravity Functions
+			// Gravity Functions - implemented in gravity.cpp
 			void setGravity();
 
-			// This function might be used to establish boundaries in the grid
-			// After it has been called, inertia will control the Agent movement
-			void resetForces(int axis);
+			// Friction functions - implemented in friction.cpp
+			void setFriction();
+			float getResultingFrictionCoefficient(int material, int mode);
+
+
 	};
 
 

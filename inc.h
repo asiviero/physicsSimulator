@@ -12,6 +12,7 @@
 #include <iostream>
 using namespace std;
 #include <string>
+#include <cmath>
 
 // Graphic Libs
 #include <GL/gl.h>
@@ -19,10 +20,11 @@ using namespace std;
 
 // User Libs
 #include "inc/constants.h"
-//#include "inc/globalElements.h"
+#include "inc/friction.h"
 #include "inc/userInput.h"
 #include "inc/generalDrawing.h"
 #include "inc/agent.h"
+
 
 
 #endif /* INC_H_ */

@@ -12,6 +12,12 @@
 #ifndef CONSTANTS_H_
 #define CONSTANTS_H_
 
+
+// Agent Constants
+#define AGENT_MASS 1
+#define AGENT_FRICTION_COEFFICIENT_STATIC 1
+#define AGENT_FRICTION_COEFFICIENT_DYNAMIC 0.1
+
 // True / False
 #define TRUE 1
 #define FALSE 0
@@ -23,12 +29,12 @@
 
 // Constant modified for smoothness on falls
 #define EARTH_GRAVITY 9.80665e-2
-#define STD_FORCE 3e-2
+#define STD_FORCE 3e-3
 
 // These constants stand for the maximum coordinates allowed in a screen
-#define X_AXIS_SIZE 1e3
-#define Y_AXIS_SIZE 1e3
-#define Z_AXIS_SIZE 1e3
+#define X_AXIS_SIZE 1e2
+#define Y_AXIS_SIZE 1e2
+#define Z_AXIS_SIZE 1e2
 
 // These constants stand for the width and height of the main window
 #define MAIN_WINDOW_WIDTH 400
@@ -55,5 +61,16 @@
 #define DOWN_CONSTANT 1
 #define LEFT_CONSTANT 2
 #define RIGHT_CONSTANT 3
+
+// Coefficient index constants
+#define STATIC 0
+#define DYNAMIC 1
+
+// Material index constants
+#define EARTH 0
+#define RUBBER 1
+#define LUBE 2
+#define LEATHER 3
+
 
 #endif /* CONSTANTS_H_ */

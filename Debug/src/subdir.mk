@@ -5,17 +5,26 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
 ../src/agent.cpp \
+../src/directional.cpp \
+../src/friction.cpp \
 ../src/generalDrawing.cpp \
+../src/gravity.cpp \
 ../src/userInput.cpp 
 
 OBJS += \
 ./src/agent.o \
+./src/directional.o \
+./src/friction.o \
 ./src/generalDrawing.o \
+./src/gravity.o \
 ./src/userInput.o 
 
 CPP_DEPS += \
 ./src/agent.d \
+./src/directional.d \
+./src/friction.d \
 ./src/generalDrawing.d \
+./src/gravity.d \
 ./src/userInput.d 
 
 

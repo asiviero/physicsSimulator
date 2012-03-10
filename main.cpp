@@ -61,7 +61,12 @@ void specialKeysHandler(int button, int x, int y) {
 		case GLUT_KEY_RIGHT:
 			mainAgent->setMoveDirectional(RIGHT_CONSTANT);
 			break;
+		case GLUT_KEY_END:
+			mainAgent->resetForces(X_AXIS);
+			mainAgent->resetForces(Y_AXIS);
+			break;
 		default:
+			cout << "vish!" << endl;
 			mainAgent->setMoveDirectional(NULL);
 	}
 }

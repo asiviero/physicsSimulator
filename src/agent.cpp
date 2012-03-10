@@ -16,7 +16,9 @@ agent::agent() {
 		floatAgentPosition[i] = 0;
 	}
 	floatAgentPosition[Y_AXIS] = Y_AXIS_SIZE;
-	floatAgentMass = 1;
+	floatAgentMass = AGENT_MASS;
+	floatAgentFrictionCoefficient[STATIC] = AGENT_FRICTION_COEFFICIENT_STATIC;
+	floatAgentFrictionCoefficient[DYNAMIC] = AGENT_FRICTION_COEFFICIENT_DYNAMIC;
 	gravitySet = true;
 }
 
@@ -34,14 +36,18 @@ void agent::drawAgent() {
 // features are added. Currently it can be summed as:
 
 /*
- * Working: Gravity, Directional Control
+ * Working: Gravity, Directional Control, Horizontal Friction
  *
- * To be implemented: Friction, Bouncing and Collision
+ * To be implemented: Bouncing and Collision
  *
  */
 void agent::moveAgent() {
-	// Determines if the body should or should not suffer gravity effect. Boolean var gravitySet is updated
+	float auxFrictionForce=0, floatPrevSpeed=0, floatCurrentSpeed=0;
+	// Determines if the agent should or should not suffer gravity effect. Boolean var gravitySet is updated
 	setGravity();
+
+	// Determines if the agent should or should not suffer friction effect. Boolean var frictionSet is updated
+	setFriction();
 
 	// setting gravity effect
 	if(gravitySet) {
@@ -54,23 +60,50 @@ void agent::moveAgent() {
 		floatAgentAcceleration[Y_AXIS] = floatAgentSpeed[Y_AXIS] = 0;
 	}
 
+
 	// After ground checking, directional control is applied, in a manner that ground
 	// effect of nulling speed and acceleration in the Y axis won't affect further movement
 	directionalMovement();
 
+	// set friction effect
+	if(frictionSet) {
+
+		if(abs(floatAgentForce[X_AXIS]) <= getResultingFrictionCoefficient(EARTH,STATIC)*getNormalForce(0) && floatAgentSpeed[X_AXIS] == 0) {
+			auxFrictionForce = floatAgentForce[X_AXIS];
+			resetForces(X_AXIS);
+		}
+		else {
+			auxFrictionForce = getSpeedDirection(X_AXIS) * getResultingFrictionCoefficient(EARTH,DYNAMIC) * getNormalForce(0);
+			floatAgentForce[X_AXIS] -= auxFrictionForce;
+		}
+
+	}
+
+	floatPrevSpeed = floatAgentSpeed[X_AXIS];
+
 	// Updates the movement vectors (acceleration, speed and position)
 	updateMovementVectors();
+
+	floatCurrentSpeed = floatAgentSpeed[X_AXIS];
 
 	// removing gravity effect
 	if(gravitySet) {
 		floatAgentForce[Y_AXIS] += EARTH_GRAVITY/floatAgentMass;
 	}
 
+	// removing friction effect
+	if(frictionSet) {
+		floatAgentForce[X_AXIS] += auxFrictionForce;
+		if(floatAgentForce[X_AXIS] == 0 && (floatPrevSpeed * floatCurrentSpeed < 0)) floatAgentAcceleration [X_AXIS] = floatAgentSpeed[X_AXIS] = 0;
+	}
 	// resetting input forces
 	resetDirectionalMovement();
 
 	// this is for testing gravity
-	//if(floatAgentPosition[Y_AXIS] > Y_AXIS_SIZE/3) resetForces(Y_AXIS);
+	if(floatAgentPosition[Y_AXIS] > Y_AXIS_SIZE/3) resetForces(Y_AXIS);
+
+	// this is for testing friction
+	if(floatAgentPosition[X_AXIS] > X_AXIS_SIZE/3) resetForces(X_AXIS);
 }
 
 // Basic function to update the vectors, from lowest to highest level
@@ -82,73 +115,22 @@ void agent::updateMovementVectors() {
 	}
 }
 
-void agent::setGravity() {
-	if(floatAgentPosition[Y_AXIS] <= 0) gravitySet = false;
-	else gravitySet = true;
-}
-
-// This function controls if and where to the agent should move
-void agent::setMoveDirectional(int dir) {
-	switch(dir) {
-		case UP_CONSTANT:
-			if(boolMoveDown) {
-				boolMoveUp = boolMoveDown = boolMoveLeft = boolMoveRight = false;
-				break;
-			}
-			boolMoveUp = true;
-			boolMoveDown = false;
-			boolMoveLeft = false;
-			boolMoveRight = false;
-			break;
-		case DOWN_CONSTANT:
-			if(boolMoveUp) {
-				boolMoveUp = boolMoveDown = boolMoveLeft = boolMoveRight = false;
-				break;
-			}
-			boolMoveUp = false;
-			boolMoveDown = true;
-			boolMoveLeft = false;
-			boolMoveRight = false;
-			break;
-		case LEFT_CONSTANT:
-			if(boolMoveRight) {
-				boolMoveUp = boolMoveDown = boolMoveLeft = boolMoveRight = false;
-				break;
-			}
-			boolMoveUp = false;
-			boolMoveDown = false;
-			boolMoveLeft = true;
-			boolMoveRight = false;
-			break;
-		case RIGHT_CONSTANT:
-			if(boolMoveLeft) {
-				boolMoveUp = boolMoveDown = boolMoveLeft = boolMoveRight = false;
-				break;
-			}
-			boolMoveUp = false;
-			boolMoveDown = false;
-			boolMoveLeft = false;
-			boolMoveRight = true;
-			break;
-		default:
-			boolMoveUp = boolMoveDown = boolMoveLeft = boolMoveRight = false;
-			break;
-	}
-}
-
-// Apply what was defined in setMoveDirectional
-void agent::directionalMovement() {
-	floatAgentForce[Y_AXIS] += boolMoveUp*STD_FORCE;
-	floatAgentForce[Y_AXIS] -= boolMoveDown*STD_FORCE;
-
-	floatAgentForce[X_AXIS] += boolMoveRight*STD_FORCE;
-	floatAgentForce[X_AXIS] -= boolMoveLeft*STD_FORCE;
-}
-
-void agent::resetDirectionalMovement() {
-	boolMoveUp = boolMoveDown = boolMoveLeft = boolMoveRight = false;
-}
-
 void agent::resetForces(int axis) {
 	floatAgentForce[axis] = 0;
+}
+
+int agent::getForceDirection(int axis) {
+	if(floatAgentForce[axis]!=0)
+	return (abs(floatAgentForce[axis])/floatAgentForce[axis]);
+	else return 0;
+}
+
+int agent::getSpeedDirection(int axis) {
+	if(floatAgentSpeed[axis]!=0)
+	return (abs(floatAgentSpeed[axis])/floatAgentSpeed[axis]);
+	else return 0;
+}
+
+float agent::getNormalForce(float angle) {
+	return (floatAgentMass * EARTH_GRAVITY * cos(angle));
 }
