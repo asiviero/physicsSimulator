@@ -9,6 +9,10 @@
 #define HORIZONTAL_GRID_LINES 10
 #define VERTICAL_GRID_LINES 10
 
+// This function is used to generate a grid for better visualization in the screen
+// It's customizable in the way of how many lines the grid should have, which is determined
+// by the 2 constants defined in this file. It takes in consideration the Axis sizes (determined
+// in constants.h to create the grid.
 void drawGrid() {
 	float floatGridMarker;
 	for(int i=0;i<HORIZONTAL_GRID_LINES;i++) {
@@ -29,6 +33,7 @@ void drawGrid() {
 	}
 }
 
+// A very simple function to flush the screen and load the "cube"
 void initScreen (void)
 {
 /*  select clearing (background) color       */

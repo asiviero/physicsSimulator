@@ -17,22 +17,31 @@ agent::agent() {
 	}
 	floatAgentPosition[Y_AXIS] = Y_AXIS_SIZE;
 	floatAgentMass = 1;
-	gravitySet = TRUE;
+	gravitySet = true;
 }
 
+// Since the agent can be represented as a single spot in the screen, this is very simple to draw
+// Its color and size can be altered in inc/constants.h
 void agent::drawAgent() {
-	glPointSize(10);
+	glPointSize(AGENT_SIZE);
 	glBegin(GL_POINTS);
 		glColor3f(floatAgentColor[RED_PCT],floatAgentColor[GREEN_PCT],floatAgentColor[BLUE_PCT]);
 		glVertex3f(floatAgentPosition[X_AXIS],floatAgentPosition[Y_AXIS],floatAgentPosition[Z_AXIS]);
 	glEnd();
 }
 
-void agent::moveAgent() {
-	//sleep(1);
-	setGravity();
+// This is the main movement function, and it'll get bigger and more complex as
+// features are added. Currently it can be summed as:
 
-	cout << "Acc Y: " << floatAgentAcceleration[Y_AXIS] << " Acc X: " << floatAgentAcceleration[X_AXIS] << endl << "intMoveUp: " << intMoveUp << endl;
+/*
+ * Working: Gravity, Directional Control
+ *
+ * To be implemented: Friction, Bouncing and Collision
+ *
+ */
+void agent::moveAgent() {
+	// Determines if the body should or should not suffer gravity effect. Boolean var gravitySet is updated
+	setGravity();
 
 	// setting gravity effect
 	if(gravitySet) {
@@ -45,15 +54,12 @@ void agent::moveAgent() {
 		floatAgentAcceleration[Y_AXIS] = floatAgentSpeed[Y_AXIS] = 0;
 	}
 
-	directionalMoviment();
+	// After ground checking, directional control is applied, in a manner that ground
+	// effect of nulling speed and acceleration in the Y axis won't affect further movement
+	directionalMovement();
 
-	for(int i=0;i<3;i++) {
-		floatAgentAcceleration[i] = floatAgentForce[i]/floatAgentMass;
-		floatAgentSpeed[i] += floatAgentAcceleration[i];
-		floatAgentPosition[i] += floatAgentSpeed[i];
-		}
-
-	//cout << "Speed Y: " << floatAgentSpeed[Y_AXIS] << " Speed X: " << floatAgentSpeed[X_AXIS] << endl;
+	// Updates the movement vectors (acceleration, speed and position)
+	updateMovementVectors();
 
 	// removing gravity effect
 	if(gravitySet) {
@@ -61,75 +67,86 @@ void agent::moveAgent() {
 	}
 
 	// resetting input forces
-	resetDirectionalMoviment();
+	resetDirectionalMovement();
 
 	// this is for testing gravity
-	if(floatAgentPosition[Y_AXIS] > 100) resetForces(Y_AXIS);
+	//if(floatAgentPosition[Y_AXIS] > Y_AXIS_SIZE/3) resetForces(Y_AXIS);
+}
+
+// Basic function to update the vectors, from lowest to highest level
+void agent::updateMovementVectors() {
+	for(int i=0;i<3;i++) {
+		floatAgentAcceleration[i] = floatAgentForce[i]/floatAgentMass;
+		floatAgentSpeed[i] += floatAgentAcceleration[i];
+		floatAgentPosition[i] += floatAgentSpeed[i];
+	}
 }
 
 void agent::setGravity() {
-	if(floatAgentPosition[Y_AXIS] <= 0) gravitySet = FALSE;
-	else gravitySet = TRUE;
+	if(floatAgentPosition[Y_AXIS] <= 0) gravitySet = false;
+	else gravitySet = true;
 }
 
+// This function controls if and where to the agent should move
 void agent::setMoveDirectional(int dir) {
 	switch(dir) {
 		case UP_CONSTANT:
-			if(intMoveDown) {
-				intMoveUp = intMoveDown = intMoveLeft = intMoveRight = FALSE;
+			if(boolMoveDown) {
+				boolMoveUp = boolMoveDown = boolMoveLeft = boolMoveRight = false;
 				break;
 			}
-			intMoveUp = TRUE;
-			intMoveDown = FALSE;
-			intMoveLeft = FALSE;
-			intMoveRight = FALSE;
+			boolMoveUp = true;
+			boolMoveDown = false;
+			boolMoveLeft = false;
+			boolMoveRight = false;
 			break;
 		case DOWN_CONSTANT:
-			if(intMoveUp) {
-				intMoveUp = intMoveDown = intMoveLeft = intMoveRight = FALSE;
+			if(boolMoveUp) {
+				boolMoveUp = boolMoveDown = boolMoveLeft = boolMoveRight = false;
 				break;
 			}
-			intMoveUp = FALSE;
-			intMoveDown = TRUE;
-			intMoveLeft = FALSE;
-			intMoveRight = FALSE;
+			boolMoveUp = false;
+			boolMoveDown = true;
+			boolMoveLeft = false;
+			boolMoveRight = false;
 			break;
 		case LEFT_CONSTANT:
-			if(intMoveRight) {
-				intMoveUp = intMoveDown = intMoveLeft = intMoveRight = FALSE;
+			if(boolMoveRight) {
+				boolMoveUp = boolMoveDown = boolMoveLeft = boolMoveRight = false;
 				break;
 			}
-			intMoveUp = FALSE;
-			intMoveDown = FALSE;
-			intMoveLeft = TRUE;
-			intMoveRight = FALSE;
+			boolMoveUp = false;
+			boolMoveDown = false;
+			boolMoveLeft = true;
+			boolMoveRight = false;
 			break;
 		case RIGHT_CONSTANT:
-			if(intMoveLeft) {
-				intMoveUp = intMoveDown = intMoveLeft = intMoveRight = FALSE;
+			if(boolMoveLeft) {
+				boolMoveUp = boolMoveDown = boolMoveLeft = boolMoveRight = false;
 				break;
 			}
-			intMoveUp = FALSE;
-			intMoveDown = FALSE;
-			intMoveLeft = FALSE;
-			intMoveRight = TRUE;
+			boolMoveUp = false;
+			boolMoveDown = false;
+			boolMoveLeft = false;
+			boolMoveRight = true;
 			break;
 		default:
-			intMoveUp = intMoveDown = intMoveLeft = intMoveRight = FALSE;
+			boolMoveUp = boolMoveDown = boolMoveLeft = boolMoveRight = false;
 			break;
 	}
 }
 
-void agent::directionalMoviment() {
-	floatAgentForce[Y_AXIS] += intMoveUp*STD_ACC;
-	floatAgentForce[Y_AXIS] -= intMoveDown*STD_ACC;
+// Apply what was defined in setMoveDirectional
+void agent::directionalMovement() {
+	floatAgentForce[Y_AXIS] += boolMoveUp*STD_FORCE;
+	floatAgentForce[Y_AXIS] -= boolMoveDown*STD_FORCE;
 
-	floatAgentForce[X_AXIS] += intMoveRight*STD_ACC;
-	floatAgentForce[X_AXIS] -= intMoveLeft*STD_ACC;
+	floatAgentForce[X_AXIS] += boolMoveRight*STD_FORCE;
+	floatAgentForce[X_AXIS] -= boolMoveLeft*STD_FORCE;
 }
 
-void agent::resetDirectionalMoviment() {
-	intMoveUp = intMoveDown = intMoveLeft = intMoveRight = FALSE;
+void agent::resetDirectionalMovement() {
+	boolMoveUp = boolMoveDown = boolMoveLeft = boolMoveRight = false;
 }
 
 void agent::resetForces(int axis) {

@@ -14,22 +14,33 @@
 #ifndef AGENT_H_
 #define AGENT_H_
 
-	class agent {// : public gravityClass {
+	class agent {
 		protected:
 			float floatAgentPosition[3], floatAgentSpeed[3], floatAgentAcceleration[3], floatAgentForce[3];
 			float floatAgentMass;
 			float floatAgentColor[3];
-			int gravitySet;
-			int intMoveUp, intMoveDown, intMoveLeft, intMoveRight;
+			bool gravitySet;
+			bool boolMoveUp, boolMoveDown, boolMoveLeft, boolMoveRight;
 
 		public:
+			// Initializing methods
 			agent();
 			void drawAgent();
+
+			// General functions
 			void moveAgent();
-			void setGravity();
-			void directionalMoviment();
+			void updateMovementVectors();
+
+			// Directional movement methods, controlled by user input
+			void directionalMovement();
 			void setMoveDirectional(int dir);
-			void resetDirectionalMoviment();
+			void resetDirectionalMovement();
+
+			// Gravity Functions
+			void setGravity();
+
+			// This function might be used to establish boundaries in the grid
+			// After it has been called, inertia will control the Agent movement
 			void resetForces(int axis);
 	};
 

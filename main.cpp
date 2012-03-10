@@ -17,14 +17,11 @@ int main(int argc, char** argv) {
 	glutInitWindowPosition(1200,800);
 	glutInitWindowSize(MAIN_WINDOW_WIDTH,MAIN_WINDOW_HEIGHT);
 	int intMainWindowID;
-	intMainWindowID = glutCreateWindow("Physichs Simulator");
+	intMainWindowID = glutCreateWindow("Physics Simulator");
 
 	// Handler Functions
 	glutKeyboardFunc(keyboardHandler);
 	glutSpecialFunc(specialKeysHandler);
-
-	// Creating the Agent
-	//mainAgent = new agent();
 
 	// Rendering
 	initScreen();
@@ -36,16 +33,18 @@ int main(int argc, char** argv) {
 void display(void)
 {
 /*  clear all pixels  */
-    //while(1) {
+
 		glClear (GL_COLOR_BUFFER_BIT);
 		glPushMatrix();
+		// Simulator functions begin here
 		drawGrid();
 		mainAgent->drawAgent();
 		mainAgent->moveAgent();
+		// Simulator functions end here
 		glPopMatrix();
 		glutPostRedisplay();
 		glutSwapBuffers();
-    //}
+
 }
 
 void specialKeysHandler(int button, int x, int y) {

@@ -23,12 +23,12 @@
 
 // Constant modified for smoothness on falls
 #define EARTH_GRAVITY 9.80665e-2
-#define STD_ACC 1e-2
+#define STD_FORCE 3e-2
 
 // These constants stand for the maximum coordinates allowed in a screen
-#define X_AXIS_SIZE 1e2
-#define Y_AXIS_SIZE 1e2
-#define Z_AXIS_SIZE 1e2
+#define X_AXIS_SIZE 1e3
+#define Y_AXIS_SIZE 1e3
+#define Z_AXIS_SIZE 1e3
 
 // These constants stand for the width and height of the main window
 #define MAIN_WINDOW_WIDTH 400
@@ -46,6 +46,9 @@
 #define RED_PCT 0
 #define GREEN_PCT 1
 #define BLUE_PCT 2
+
+// Constant for the agent size
+#define AGENT_SIZE 10
 
 // Directional constants
 #define UP_CONSTANT 0
