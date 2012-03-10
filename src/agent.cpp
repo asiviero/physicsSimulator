@@ -15,9 +15,9 @@ agent::agent() {
 		floatAgentColor[i] = 0;
 		floatAgentPosition[i] = 0;
 	}
-	//floatAgentPosition[Y_AXIS] = Y_AXIS_SIZE;
+	floatAgentPosition[Y_AXIS] = Y_AXIS_SIZE;
 	floatAgentMass = 1;
-	gravitySet = false;
+	gravitySet = TRUE;
 }
 
 void agent::drawAgent() {
@@ -30,35 +30,47 @@ void agent::drawAgent() {
 
 void agent::moveAgent() {
 	//sleep(1);
-	//gravity();
+	setGravity();
+
+	cout << "Acc Y: " << floatAgentAcceleration[Y_AXIS] << " Acc X: " << floatAgentAcceleration[X_AXIS] << endl << "intMoveUp: " << intMoveUp << endl;
+
+	// setting gravity effect
+	if(gravitySet) {
+		floatAgentForce[Y_AXIS] -= EARTH_GRAVITY/floatAgentMass;
+	}
+
+	// check for ground
+	if(floatAgentPosition[Y_AXIS] <= 0) {
+		//reset speed and acceleration vectors in Y axis
+		floatAgentAcceleration[Y_AXIS] = floatAgentSpeed[Y_AXIS] = 0;
+	}
+
 	directionalMoviment();
-	cout << "Acc Y: " << floatAgentAcceleration[Y_AXIS] << " Acc X: " << floatAgentAcceleration[X_AXIS] << endl;
 
 	for(int i=0;i<3;i++) {
+		floatAgentAcceleration[i] = floatAgentForce[i]/floatAgentMass;
 		floatAgentSpeed[i] += floatAgentAcceleration[i];
 		floatAgentPosition[i] += floatAgentSpeed[i];
 		}
 
-	cout << "Speed Y: " << floatAgentSpeed[Y_AXIS] << " Speed X: " << floatAgentSpeed[X_AXIS] << endl;
+	//cout << "Speed Y: " << floatAgentSpeed[Y_AXIS] << " Speed X: " << floatAgentSpeed[X_AXIS] << endl;
 
+	// removing gravity effect
+	if(gravitySet) {
+		floatAgentForce[Y_AXIS] += EARTH_GRAVITY/floatAgentMass;
+	}
+
+	// resetting input forces
+	resetDirectionalMoviment();
+
+	// this is for testing gravity
+	if(floatAgentPosition[Y_AXIS] > 100) resetForces(Y_AXIS);
 }
 
-/*void agent::gravity() {
-	if(floatAgentPosition[Y_AXIS] <= 0 && gravitySet != FALSE) {
-		floatAgentAcceleration[Y_AXIS] = 0;
-		floatAgentSpeed[Y_AXIS] = 0;
-		gravitySet = FALSE;
-	}
-	else {
-		if(floatAgentPosition[Y_AXIS] > 0) {
-			if(gravitySet==TRUE) {
-				floatAgentAcceleration[Y_AXIS] -= EARTH_GRAVITY;
-				gravitySet++;
-		}
-	}
-	}
-
-}*/
+void agent::setGravity() {
+	if(floatAgentPosition[Y_AXIS] <= 0) gravitySet = FALSE;
+	else gravitySet = TRUE;
+}
 
 void agent::setMoveDirectional(int dir) {
 	switch(dir) {
@@ -109,9 +121,17 @@ void agent::setMoveDirectional(int dir) {
 }
 
 void agent::directionalMoviment() {
-	floatAgentAcceleration[Y_AXIS] += intMoveUp*STD_ACC;
-	floatAgentAcceleration[Y_AXIS] -= intMoveDown*STD_ACC;
+	floatAgentForce[Y_AXIS] += intMoveUp*STD_ACC;
+	floatAgentForce[Y_AXIS] -= intMoveDown*STD_ACC;
 
-	floatAgentAcceleration[X_AXIS] += intMoveRight*STD_ACC;
-	floatAgentAcceleration[X_AXIS] -= intMoveLeft*STD_ACC;
+	floatAgentForce[X_AXIS] += intMoveRight*STD_ACC;
+	floatAgentForce[X_AXIS] -= intMoveLeft*STD_ACC;
+}
+
+void agent::resetDirectionalMoviment() {
+	intMoveUp = intMoveDown = intMoveLeft = intMoveRight = FALSE;
+}
+
+void agent::resetForces(int axis) {
+	floatAgentForce[axis] = 0;
 }

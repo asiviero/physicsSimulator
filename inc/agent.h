@@ -16,7 +16,7 @@
 
 	class agent {// : public gravityClass {
 		protected:
-			float floatAgentPosition[3], floatAgentSpeed[3], floatAgentAcceleration[3];
+			float floatAgentPosition[3], floatAgentSpeed[3], floatAgentAcceleration[3], floatAgentForce[3];
 			float floatAgentMass;
 			float floatAgentColor[3];
 			int gravitySet;
@@ -26,9 +26,11 @@
 			agent();
 			void drawAgent();
 			void moveAgent();
-			void gravity();
+			void setGravity();
 			void directionalMoviment();
 			void setMoveDirectional(int dir);
+			void resetDirectionalMoviment();
+			void resetForces(int axis);
 	};
 
 

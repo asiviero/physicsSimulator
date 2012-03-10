@@ -15,4 +15,5 @@ void keyboardHandler(unsigned char button, int x, int y) {
 			exit(0);
 			break;
 	}
+
 }
