@@ -73,5 +73,7 @@
 #define LUBE 2
 #define LEATHER 3
 
+// Constants used to regulate loss of energy on falls and bouncing
+#define STANDARD_LOSS_COEFFICIENT 1
 
 #endif /* CONSTANTS_H_ */

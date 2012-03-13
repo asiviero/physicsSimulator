@@ -7,7 +7,7 @@
  *  An agent is a controllable object in the simulator.
  *
  *  Its class contains information about its current position, speed, acceleration in space and material properties,
- *  such as its mass.
+ *  such as its mass;
  *
  */
 
@@ -20,12 +20,14 @@
 			float floatAgentMass, floatAgentFrictionCoefficient[2];
 			float floatAgentColor[3];
 			float floatBounceTimer;
+			float floatEnergyLossBounce;
 			bool gravitySet, frictionSet;
 			bool boolMoveUp, boolMoveDown, boolMoveLeft, boolMoveRight;
 
 		public:
 			// Initializing methods
 			agent();
+			agent(float EnergyLossCoefficient);
 			void drawAgent();
 
 			// General functions - implemented in agent.cpp

@@ -8,7 +8,7 @@
 #include "../inc.h"
 
 void agent::increaseBounceTimer() {
-	floatBounceTimer += 0.0001;
+	floatBounceTimer += floatEnergyLossBounce*0.0001;
 }
 
 float agent::energyLossCoefficient() {

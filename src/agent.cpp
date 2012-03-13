@@ -23,6 +23,24 @@ agent::agent() {
 	gravitySet = true;
 }
 
+agent::agent(float EnergyLossCoefficient) {
+	// Reset all vars, except the mass
+	for(int i=0;i<3;i++) {
+		floatAgentAcceleration[i] = 0;
+		floatAgentSpeed[i] = 0;
+		floatAgentColor[i] = 0;
+		floatAgentPosition[i] = 0;
+	}
+	floatAgentPosition[Y_AXIS] = 0;//Y_AXIS_SIZE;
+	floatAgentMass = AGENT_MASS;
+	floatAgentFrictionCoefficient[STATIC] = AGENT_FRICTION_COEFFICIENT_STATIC;
+	floatAgentFrictionCoefficient[DYNAMIC] = AGENT_FRICTION_COEFFICIENT_DYNAMIC;
+	floatBounceTimer = 0;
+	gravitySet = true;
+	floatEnergyLossBounce = EnergyLossCoefficient;
+}
+
+
 // Since the agent can be represented as a single spot in the screen, this is very simple to draw
 // Its color and size can be altered in inc/constants.h
 void agent::drawAgent() {
@@ -91,7 +109,6 @@ void agent::moveAgent() {
 
 	}
 
-	cout << floatAgentForce[Y_AXIS] << "  " << floatAgentSpeed[X_AXIS] << endl;
 	floatPrevSpeed = floatAgentSpeed[X_AXIS];
 
 	// Updates the movement vectors (acceleration, speed and position)

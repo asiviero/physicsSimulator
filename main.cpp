@@ -7,7 +7,7 @@
 
 #include "inc.h"
 
-agent *mainAgent = new agent();
+agent *mainAgent = new agent(STANDARD_LOSS_COEFFICIENT);
 void display(void);
 
 int main(int argc, char** argv) {
@@ -66,7 +66,6 @@ void specialKeysHandler(int button, int x, int y) {
 			mainAgent->resetForces(Y_AXIS);
 			break;
 		default:
-			cout << "vish!" << endl;
 			mainAgent->setMoveDirectional(NULL);
 	}
 }
